@@ -36,9 +36,16 @@ distribution identified at the top of the script in the `SOURCE_DIST` variable) 
 The builds don't always go smoothly. You'll see in each build script that I've had to make adjustments to the build scripts in
 order to have them succeed on the older distribution.
 
-To troubleshoot you need to be interactive in the docker container. Grab the `docker run` command from the `Makefile`,
-change the `$(HOME)`s to `$HOME` and remove the `/build-all.sh` from the end of it. That will run the container interactively
-and you can manually run whichever `/build-*.sh` script you need to troubleshoot. The build files are in `/tmp/build-*`.
+To troubleshoot you need to be interactive in the docker container. Use `make run:22.04` etc to run the container interactively.
+Inside the container, run `/build-init.sh` to setup the gpg daemon and then you can manually run whichever `/build-*.sh`
+script you need to troubleshoot. The build output is created in `/tmp/build-*`.
+
+If you run builds manually, such as by manually issuing the commands in the build scripts, remember to import the environment
+variables so that signing works.
+
+```shell
+source /env.sh
+```
 
 Typically builds fail with dependencies that aren't available in the backported system, in which case I've edited the `debian/control`
 file to change them and then run `apt-get build-dep -y .` in the source folder (e.g. `/tmp/build-vips/vips-8.15.2`). Finally build the

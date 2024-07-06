@@ -21,9 +21,21 @@ build20.04:
 		apt-build-20.04 \
 		/build-all.sh
 
+.PHONY: run20.04
+run20.04:
+	docker run -it --rm -v $(HOME)/.gnupg/pubring.gpg:/root/.gnupg/pubring.gpg \
+		-v $(HOME)/.gnupg/secring.gpg:/root/.gnupg/secring.gpg \
+		apt-build-20.04
+
 .PHONY: build22.04
 build22.04:
 	docker run -it --rm -v $(HOME)/.gnupg/pubring.gpg:/root/.gnupg/pubring.gpg \
 		-v $(HOME)/.gnupg/secring.gpg:/root/.gnupg/secring.gpg \
 		apt-build-22.04 \
 		/build-all.sh
+
+.PHONY: run22.04
+run22.04:
+	docker run -it --rm -v $(HOME)/.gnupg/pubring.gpg:/root/.gnupg/pubring.gpg \
+		-v $(HOME)/.gnupg/secring.gpg:/root/.gnupg/secring.gpg \
+		apt-build-22.04

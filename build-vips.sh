@@ -1,5 +1,7 @@
 #!/bin/bash -eu
 
+source /env.sh
+
 SOURCE_DIST=oracular
 
 # Get source from unstable so we get the latest available source

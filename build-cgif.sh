@@ -1,5 +1,7 @@
 #!/bin/bash -eu
 
+source /env.sh
+
 if [ "$(lsb_release -cs)" != "focal" ]; then
 	echo "No need to build cgif on $(lsb_release -cs)"
 	exit 0
