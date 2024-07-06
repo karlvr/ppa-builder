@@ -13,6 +13,11 @@ RUN apt-get -y --no-install-recommends install \
     libdistro-info-perl \
     software-properties-common
 
+# Install troubleshooting tools
+RUN apt-get -y --no-install-recommends install \
+    vim \
+    less
+
 COPY build-*.sh /
 COPY env.sh /
 RUN chmod +x /build-*.sh && \
