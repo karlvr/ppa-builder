@@ -1,0 +1,27 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN sed -e '/^#\sdeb-src /s/^# *//;t;d' "/etc/apt/sources.list" > "/etc/apt/sources.list.d/ubuntu-sources.list" && \
+    apt-get update
+
+# Install build environment
+RUN apt-get -y --no-install-recommends install \
+    build-essential \
+    devscripts \
+    lsb-release \
+    dput \
+    wget \
+    libdistro-info-perl \
+    software-properties-common
+
+# Install troubleshooting tools
+RUN apt-get -y --no-install-recommends install \
+    vim \
+    less
+
+COPY build-*.sh /
+COPY env.sh /
+RUN chmod +x /build-*.sh && \
+    mkdir /root/.gnupg && \
+    chmod 700 /root/.gnupg
