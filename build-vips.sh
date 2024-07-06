@@ -30,12 +30,24 @@ if [ "$(lsb_release -cs)" == "focal" ]; then
 	sed --in-place 's/libspng-dev,//' debian/control
 	sed --in-place 's/libhwy-dev,//' debian/control
 	sed --in-place 's/--timeout-multiplier=10//' debian/rules
+
+	# Rename the package from libvips42t64 back to just libvips42
+	sed --in-place -e 's/libvips42t64/libvips42/g' debian/libvips* debian/control
+	mv debian/libvips42t64.install debian/libvips42.install
+	mv debian/libvips42t64.lintian-overrides debian/libvips42.lintian-overrides
+	mv debian/libvips42t64.shlibs debian/libvips42.shlibs
 elif [ "$(lsb_release -cs)" == "jammy" ]; then
 	sed --in-place 's/libjxl-dev,//' debian/control
 	sed --in-place 's/1.22.5/1.21.1/' debian/control # dpkg-dev
 	sed --in-place 's/gobject-introspection-bin,/gobject-introspection,/' debian/control
 	sed --in-place 's/gir1.2-gobject-2.0-dev,//' debian/control
 	sed --in-place 's/libspng-dev,//' debian/control
+
+	# Rename the package from libvips42t64 back to just libvips42
+	sed --in-place -e 's/libvips42t64/libvips42/g' debian/libvips* debian/control
+	mv debian/libvips42t64.install debian/libvips42.install
+	mv debian/libvips42t64.lintian-overrides debian/libvips42.lintian-overrides
+	mv debian/libvips42t64.shlibs debian/libvips42.shlibs
 fi
 
 apt-get build-dep -y .
