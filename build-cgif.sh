@@ -7,7 +7,7 @@ if [ "$(lsb_release -cs)" != "focal" ]; then
 	exit 0
 fi
 
-SOURCE_DIST=oracular
+SOURCE_DIST=questing
 
 # Get source from unstable so we get the latest available source
 echo "deb-src http://archive.ubuntu.com/ubuntu/ $SOURCE_DIST universe restricted" > "/etc/apt/sources.list.d/ubuntu-unstable-sources.list"
