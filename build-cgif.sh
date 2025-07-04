@@ -2,11 +2,6 @@
 
 source /env.sh
 
-if [ "$(lsb_release -cs)" != "focal" ]; then
-	echo "No need to build cgif on $(lsb_release -cs)"
-	exit 0
-fi
-
 SOURCE_DIST=questing
 
 # Get source from unstable so we get the latest available source
