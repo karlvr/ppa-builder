@@ -2,7 +2,7 @@
 
 source /env.sh
 
-SOURCE_DIST=oracular
+SOURCE_DIST=questing
 
 # Get source from unstable so we get the latest available source
 echo "deb-src http://archive.ubuntu.com/ubuntu/ $SOURCE_DIST universe restricted" > "/etc/apt/sources.list.d/ubuntu-unstable-sources.list"
@@ -50,12 +50,23 @@ elif [ "$(lsb_release -cs)" == "jammy" ]; then
 	mv debian/libvips42t64.shlibs debian/libvips42.shlibs
 fi
 
+# Fix debian/gir1.2-vips-8.0.install which contains ${DEB_HOST_MULTIARCH}
+sed --in-place '/DESTDIR = /a\
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)\
+\
+override_dh_install:\
+	sed -i -e "s/\\$${DEB_HOST_MULTIARCH}/$(DEB_HOST_MULTIARCH)/g" $(CURDIR)/debian/*.install\
+	dh_install\
+' debian/rules
+
 apt-get build-dep -y .
 dch --local "~$(lsb_release -sc)$(date +%Y%m%d%H%M)" --distribution $(lsb_release -sc) 'New upstream release backported.'
 
 # Test that we can actually build it, it's easier to do that locally than wait for launchpad to do it
 # even though it makes this take longer
+cp debian/gir1.2-vips-8.0.install /tmp/gir1.2-vips-8.0.install.bak
 debuild
+cp /tmp/gir1.2-vips-8.0.install.bak debian/gir1.2-vips-8.0.install
 
 # Build the source
 debuild -S -sd
