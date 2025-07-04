@@ -6,10 +6,13 @@ SOURCE_DIST=questing
 
 # Get source from unstable so we get the latest available source
 echo "deb-src http://archive.ubuntu.com/ubuntu/ $SOURCE_DIST universe restricted" > "/etc/apt/sources.list.d/ubuntu-unstable-sources.list"
-apt-get update
 
 # Make available modern meson, required by libvips
-add-apt-repository -y ppa:ubuntu-support-team/meson
+if [ "$(lsb_release -cs)" != "noble" ]; then
+	add-apt-repository -y ppa:ubuntu-support-team/meson
+fi
+
+apt-get update
 
 mkdir -p /tmp/build-vips && cd /tmp/build-vips
 apt-get -q -y source vips
@@ -48,16 +51,24 @@ elif [ "$(lsb_release -cs)" == "jammy" ]; then
 	mv debian/libvips42t64.install debian/libvips42.install
 	mv debian/libvips42t64.lintian-overrides debian/libvips42.lintian-overrides
 	mv debian/libvips42t64.shlibs debian/libvips42.shlibs
+elif [ "$(lsb_release -cs)" == "noble" ]; then
+	# Rename the package from libvips42t64 back to just libvips42
+	sed --in-place -e 's/libvips42t64/libvips42/g' debian/libvips* debian/control
+	mv debian/libvips42t64.install debian/libvips42.install
+	mv debian/libvips42t64.lintian-overrides debian/libvips42.lintian-overrides
+	mv debian/libvips42t64.shlibs debian/libvips42.shlibs
 fi
 
 # Fix debian/gir1.2-vips-8.0.install which contains ${DEB_HOST_MULTIARCH}
-sed --in-place '/DESTDIR = /a\
+if [ "$(lsb_release -cs)" != "noble" ]; then
+	sed --in-place '/DESTDIR = /a\
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)\
 \
 override_dh_install:\
 	sed -i -e "s/\\$${DEB_HOST_MULTIARCH}/$(DEB_HOST_MULTIARCH)/g" $(CURDIR)/debian/*.install\
 	dh_install\
 ' debian/rules
+fi
 
 apt-get build-dep -y .
 dch --local "~$(lsb_release -sc)$(date +%Y%m%d%H%M)" --distribution $(lsb_release -sc) 'New upstream release backported.'

@@ -6,10 +6,13 @@ SOURCE_DIST=questing
 
 # Get source from unstable so we get the latest available source
 echo "deb-src http://archive.ubuntu.com/ubuntu/ $SOURCE_DIST universe restricted" > "/etc/apt/sources.list.d/ubuntu-unstable-sources.list"
-apt-get update
 
 # Make available modern meson, required by libvips
-add-apt-repository -y ppa:ubuntu-support-team/meson
+if [ "$(lsb_release -cs)" != "noble" ]; then
+	add-apt-repository -y ppa:ubuntu-support-team/meson
+fi
+
+apt-get update
 
 mkdir -p /tmp/build-cgif && cd /tmp/build-cgif
 apt-get -q -y source cgif
