@@ -31,6 +31,8 @@ make
 The `build-vips.sh` script builds the latest version of [libvips](https://www.libvips.org/) that's available (in the Ubuntu
 distribution identified at the top of the script in the `SOURCE_DIST` variable) for Ubuntu 20.04 and 22.04.
 
+You can check the versions by distribution at https://launchpad.net/ubuntu/+source/vips.
+
 ## Troubleshooting
 
 The builds don't always go smoothly. You'll see in each build script that I've had to make adjustments to the build scripts in
